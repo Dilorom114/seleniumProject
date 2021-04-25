@@ -23,13 +23,22 @@ from selenium import webdriver
 import time
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.chrome.options import Options
 
 from utilities import *
 
-driver = webdriver.Chrome()
+# this will disable adds, unwanted popups
+options = Options()
+options.add_argument('--disable-notifications')
+options.add_argument('--headless')
+
+driver = webdriver.Chrome(chrome_options=options)
+
 # implicit wait is defined once when you start the browser and this will apply to all find element steps
 driver.implicitly_wait(5)
 driver.maximize_window()
+
 
 def open_website(url):
     '''open the website, and click on 'No, thanks!' button'''
@@ -153,3 +162,106 @@ def amazon_example():
 
     search_box.send_keys(Keys.RETURN)
     search_box.clear()
+
+
+def drop_down_list():
+    pass
+    url_ddown = "https://www.seleniumeasy.com/test/basic-select-dropdown-demo.html"
+    driver.get(url_ddown)
+    driver.refresh()
+    ddown_list = driver.find_element_by_id("select-demo")
+    print("Different...")
+    selection = Select(ddown_list)
+    selection.select_by_visible_text("Tuesday")
+    selection.select_by_index(5)
+    selection.select_by_value("Monday")
+
+    print("options method: returns list of options in the drop down")
+    for element in selection.options:
+        print(element.text)
+
+    print("first_selected_option: returns element select")
+    print(selection.first_selected_option.text)
+    print("all_selected_options: returns selected option(s):")
+    for element in selection.all_selected_options:
+        print(element.text)
+
+
+def drop_down_multi_select():
+    url_dropdown = "https://www.seleniumeasy.com/test/basic-select-dropdown-demo.html"
+    driver.get(url_dropdown)
+    ddown_list = driver.find_element_by_id("multi-select")  # Select element with '<select>' tag
+    selection = Select(ddown_list)
+
+    #Multi select drop down enables you to select multi options
+    selection.select_by_value("New York")
+    selection.select_by_visible_text("Ohio")
+    print("selection.all_selected_options :")
+    for element in selection.all_selected_options:
+        print(element.text)  # this will return all selected options (new york, ohio)
+    print("Deselecting by index: ")
+    selection.deselect_by_index(4)
+
+    selection.select_by_index(5)
+    selection.select_by_index(7)
+    print("Deselecting_all: ")
+    selection.deselect_all()
+
+def swich_to_alert():
+    driver.get("https://www.seleniumeasy.com/test/javascript-alert-box-demo.html")
+    driver.find_element_by_xpath("//button[@onclick='myAlertFunction()']").click()
+    alert = driver.switch_to.alert
+    print(alert.text)  # 'I am an alert box!'
+    print("Clicking the OK button")
+    alert.accept()
+    print("***** handling alerts with multiple buttons ***** ")
+    driver.find_element_by_xpath("//button[@onclick='myPromptFunction()']").click()
+    alert2 = driver.switch_to.alert
+    alert2.send_keys("John Doe")  # this did not work
+
+    print("Clicking the CANCEL button")
+    alert2.dismiss()
+    driver.find_element_by_xpath("//button[@onclick='myPromptFunction()']").click()
+    alert2.send_keys("John Doe")
+    print(alert2.text)  # 'Please enter your name'
+    alert2.accept()
+
+def switch_to_window():
+    driver.get("https://www.seleniumeasy.com/test/javascript-alert-box-demo.html")
+    print(" ******** switching to window ********")
+    email_locator = '//input[@name="session[username_or_email]"]'
+    url_window_popup = "https://www.seleniumeasy.com/test/window-popup-modal-demo.html"
+    twt_xpath = '//a[@title="Follow @seleniumeasy on Twitter"]'
+    driver.get(url_window_popup)
+
+    driver.get(url_window_popup)
+    print("This is the unique id of current tab/window: ")
+    driver.current_window_handle # 'CDwindow-376884978E3D6EAD4E8A76FDB1CBDCE0'
+    main_window = driver.current_window_handle # we are saving this unique ID so we can come back to this window
+    driver.find_element_by_xpath(twt_xpath).click()
+    print("listing all unique id of all windows open:")
+    driver.window_handles  # ['CDwindow-376884978E3D6EAD4E8A76FDB1CBDCE0', 'CDwindow-54BE1A404685F587B6F62CA7C2B1989E']
+    handles = driver.window_handles # we can save in all ids in the list
+    print("switching to the second window, this will be second element from the handles list.")
+    driver.switch_to.window(handles[1])
+
+    print("finding the email input and entering the email on the second window.")
+    email_input = driver.find_element_by_xpath(email_locator)
+    email_input.send_keys("myawesomeemail@gmail.com")
+
+    print("switching the focus back to main window")
+    driver.switch_to.window(handles[0])
+    print("switching the focus to second window, twitter window.")
+    driver.switch_to.window(handles[1])
+    email_input = driver.find_element_by_xpath(email_locator)
+    email_input.send_keys(Keys.TAB)
+    pass_locator = '//input[@name="session[password]"]'
+    pass_input = driver.find_element_by_xpath(pass_locator)
+    pass_input.send_keys("mypassword")
+    print('switching the window is completed.')
+
+
+
+
+
+

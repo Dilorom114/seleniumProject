@@ -16,6 +16,7 @@ checkbox_test()
 # close_browser()
 
 
+
 # driver.get("https://amazon.com")
 # host = driver.current_url
 # host
@@ -47,10 +48,25 @@ print("Scenario 3 completed")
 # close_browser()
 
 # Scenario 4: amazon example, find_elements
-amazon_example()
+# amazon_example()
 print("Steps are completed!")
 
+# Scenario 5:
+print("Scenario 5 started")
+drop_down_list()
 
+# Scenario 6:
+print("Scenario 6 started")
+drop_down_multi_select()
+
+# Scenario 7:
+print("Scenario 7 started")
+swich_to_alert()
+
+# Scenario 8:
+print("Scenario 8 started")
+switch_to_window()
+# close_browser()
 
 
 
