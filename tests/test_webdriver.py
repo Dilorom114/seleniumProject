@@ -1,19 +1,24 @@
+import time
+
 from source.finding_elements import *
 
 print("Execution starting....")
-# Scenario 1:
-url_inputs = "https://www.seleniumeasy.com/test/basic-first-form-demo.html"
-open_website(url_inputs)
-back_forward()
-get_total_input_fields()
-# close_browser()
 
-# Scenario 2:
-url_checkbox = "https://www.seleniumeasy.com/test/basic-checkbox-demo.html"
-open_website(url_checkbox)
-# create steps to test checkbox using selenium
-checkbox_test()
-# close_browser()
+def test_webdriver_input_elements():
+    # Scenario 1:
+    print("\nScenario #1: WebDriver methods, properties, WebElement methods (input fields)")
+    url_inputs = "https://www.seleniumeasy.com/test/basic-first-form-demo.html"
+    open_website(url_inputs)
+    back_forward()
+    get_total_input_fields()
+
+def test_checkbox():
+    # Scenario 2:
+    print("\nScenario #2: Handling CheckBox")
+    url_checkbox = "https://www.seleniumeasy.com/test/basic-checkbox-demo.html"
+    open_website(url_checkbox)
+    # create steps to test checkbox using selenium
+    checkbox_elements()
 
 
 
@@ -36,37 +41,23 @@ checkbox_test()
 # # search_box.send_keys(Keys.RETURN)
 # # search_box.clear()
 
+print("Execution starting....")
+
+def test_ecommerse_products_example():
+    # Scenario 3
+    print("\nScenario #3: working with multiple elements, ecommerse website")
+    # go to this website and search the product
+    website = "http://automationpractice.com/index.php"
+    open_website(website)
+    ecommerse_search()
+    print("Scenario 3 completed")
 
 
-# Scenario 3: working with multiple elements, ecommerse website
-# go to this website
-print("Scenario 3 started")
-website = "http://automationpractice.com/index.php"
-open_website(website)
-ecommerse_search()
-print("Scenario 3 completed")
-# close_browser()
+def test_amazon_example():
+    # Scenario 4: amazon example, find_elements
+    amazon_example()
 
-# Scenario 4: amazon example, find_elements
-# amazon_example()
+
+print("closing the browser")
+close_browser()
 print("Steps are completed!")
-
-# Scenario 5:
-print("Scenario 5 started")
-drop_down_list()
-
-# Scenario 6:
-print("Scenario 6 started")
-drop_down_multi_select()
-
-# Scenario 7:
-print("Scenario 7 started")
-swich_to_alert()
-
-# Scenario 8:
-print("Scenario 8 started")
-switch_to_window()
-# close_browser()
-
-
-
