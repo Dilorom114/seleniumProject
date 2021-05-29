@@ -18,23 +18,29 @@
 # Functions from selenium
 
 
+
+
 # start the browser
-from selenium import webdriver
 import time
+
+from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 from utilities import *
 
 # this will disable adds, unwanted popups
 options = Options()
 options.add_argument('--disable-notifications')
-options.add_argument('--headless')
+# options.add_argument('--headless')  # running the chrome on the background
 
 driver = webdriver.Chrome(chrome_options=options)
-
 # implicit wait is defined once when you start the browser and this will apply to all find element steps
 driver.implicitly_wait(5)
 driver.maximize_window()
@@ -91,7 +97,7 @@ def close_browser():
     driver.quit()  # closes the browser
 
 
-def checkbox_test():
+def checkbox_elements():
     # todo: code here
     # find the element (using xpath) to check, and click
     check_xpath = "//input[@id='isAgeSelected']"
@@ -165,13 +171,12 @@ def amazon_example():
 
 
 def drop_down_list():
-    pass
-    url_ddown = "https://www.seleniumeasy.com/test/basic-select-dropdown-demo.html"
-    driver.get(url_ddown)
+    url_dropdown = "https://www.seleniumeasy.com/test/basic-select-dropdown-demo.html"
+    driver.get(url_dropdown)
     driver.refresh()
-    ddown_list = driver.find_element_by_id("select-demo")
-    print("Different...")
-    selection = Select(ddown_list)
+    ddown_list = driver.find_element_by_id("select-demo")  # Select element
+    selection = Select(ddown_list)  # object to represent your drop down on UI
+    print("Different ways of selecting from drop down list: ")
     selection.select_by_visible_text("Tuesday")
     selection.select_by_index(5)
     selection.select_by_value("Monday")
@@ -180,7 +185,7 @@ def drop_down_list():
     for element in selection.options:
         print(element.text)
 
-    print("first_selected_option: returns element select")
+    print("first_selected_option: returns element firstly selected ")
     print(selection.first_selected_option.text)
     print("all_selected_options: returns selected option(s):")
     for element in selection.all_selected_options:
@@ -204,7 +209,7 @@ def drop_down_multi_select():
 
     selection.select_by_index(5)
     selection.select_by_index(7)
-    print("Deselecting_all: ")
+    print("Deselecting_all : ")
     selection.deselect_all()
 
 def swich_to_alert():
@@ -228,21 +233,21 @@ def swich_to_alert():
 
 def switch_to_window():
     driver.get("https://www.seleniumeasy.com/test/javascript-alert-box-demo.html")
+
     print(" ******** switching to window ********")
     email_locator = '//input[@name="session[username_or_email]"]'
     url_window_popup = "https://www.seleniumeasy.com/test/window-popup-modal-demo.html"
     twt_xpath = '//a[@title="Follow @seleniumeasy on Twitter"]'
-    driver.get(url_window_popup)
 
     driver.get(url_window_popup)
     print("This is the unique id of current tab/window: ")
-    driver.current_window_handle # 'CDwindow-376884978E3D6EAD4E8A76FDB1CBDCE0'
+    driver.current_window_handle  # 'CDwindow-376884978E3D6EAD4E8A76FDB1CBDCE0'
     main_window = driver.current_window_handle # we are saving this unique ID so we can come back to this window
-    driver.find_element_by_xpath(twt_xpath).click()
-    print("listing all unique id of all windows open:")
+    driver.find_element_by_xpath(twt_xpath).click()  # this opens a new window
+    print("Listing all unique ids of all windows open:")
     driver.window_handles  # ['CDwindow-376884978E3D6EAD4E8A76FDB1CBDCE0', 'CDwindow-54BE1A404685F587B6F62CA7C2B1989E']
-    handles = driver.window_handles # we can save in all ids in the list
-    print("switching to the second window, this will be second element from the handles list.")
+    handles = driver.window_handles # we can save all ids in the list
+    print("switching to the second window, this will be the second element from the handles list.")
     driver.switch_to.window(handles[1])
 
     print("finding the email input and entering the email on the second window.")
@@ -251,14 +256,120 @@ def switch_to_window():
 
     print("switching the focus back to main window")
     driver.switch_to.window(handles[0])
-    print("switching the focus to second window, twitter window.")
+    print("switching the focus to the second window, twitter window.")
     driver.switch_to.window(handles[1])
     email_input = driver.find_element_by_xpath(email_locator)
     email_input.send_keys(Keys.TAB)
     pass_locator = '//input[@name="session[password]"]'
     pass_input = driver.find_element_by_xpath(pass_locator)
     pass_input.send_keys("mypassword")
+    driver.switch_to.window(handles[0])
     print('switching the window is completed.')
+
+
+def explicit_wait_methods():
+    # Variables and objects
+    url = "https://chercher.tech/practice/explicit-wait-sample-selenium-webdriver"
+    # click button: # populate-text
+    # explicitly wait until
+    # text_to_be_present_in_element(locator, text_) -- "Selenium"
+    # locators: h2 (id), //h2[@id='h2' (xpath), #h2 (css selector)
+    # driver.find_element_by_xpath("//h2[@id='h2' and text()='Selenium Webdriver']") -- this is not good
+    msg_xpath = "//h2[@id='h2']"
+    msg_id = "h2"
+    msg_css_selector = "#h2"
+    # locator1 = (By.XPATH, msg_xpath)
+    extd_txt = "Selenium Webdriver"
+    wdwait = WebDriverWait(driver, 60)
+
+    # Steps start here
+    driver.get(url)
+
+    print ("## Case 1: text_to_be_present_in_element")
+    element = driver.find_element_by_id("populate-text")  # finding the button to click
+    # printing the message of the h2 before clicking
+    msg_txt = driver.find_element_by_xpath(msg_xpath)
+    print(f"Current message text: {msg_txt.text}")
+    element.click()
+
+    print("waiting until expected text to appear...")
+    # WebDriverWait(driver, 60).until(expected_conditions.text_to_be_present_in_element((By.XPATH, msg_xpath), extd_txt))
+    msg = wdwait.until(EC.text_to_be_present_in_element((By.XPATH, msg_xpath), extd_txt))
+    print(f"Did the message appear now? - {msg}")
+    print(f"New (expected) message text: {msg_txt.text}")
+
+    print ("## Case 2: visibility_of_element_located")
+    display_btn_id = "display-other-button"
+    driver.find_element_by_id(display_btn_id).click()
+    print("waiting until enabled button appears... ")
+    enabled_btn = wdwait.until(EC.visibility_of_element_located((By.ID, 'hidden')))
+    enabled_btn.click()
+    print("wait until enabled button disappears...")
+    wdwait.until_not(EC.visibility_of_element_located((By.ID, 'hidden')))
+    print("Case 2 completed!")
+
+    print ("## Case 3: element_to_be_clickable")
+    enabled_btn_id = "enable-button"
+    driver.find_element_by_id(enabled_btn_id).click()
+    print("waiting until Button button is clickable... ")
+    wdwait.until_not(EC.element_to_be_clickable((By.CSS_SELECTOR, '#disable')))
+    print("Case 3 completed!")
+
+    print ("## Case 4: element_to_be_selected")
+    check_btn_id = "checkbox"
+
+    wdwait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, check_btn_id)))
+    driver.find_element_by_id(check_btn_id).click()
+
+    print("waiting until box is selected... ")
+    wdwait.until(EC.element_to_be_selected((By.CSS_SELECTOR, '#ch')))  # this returns True/False
+    driver.find_element_by_css_selector("#ch").click()
+    print("waiting until box is unchecked... ")
+    wdwait.until_not(EC.element_to_be_selected((By.CSS_SELECTOR, "#ch")))
+    print("Case 4 completed!")
+
+    # driver.find_element((By.ID, 'username'))
+    # driver.find_element_by_id("username")
+
+
+def drag_drop_action():
+    pass
+    url = "https://www.globalsqa.com/demo-site/draganddrop/"
+    driver.get(url)
+    time.sleep(5)
+    print("Identifying the source and target elements...")
+    elem1 = driver.find_element_by_xpath("//img[@src='images/high_tatras_min.jpg']")
+    elem2 = driver.find_element_by_xpath("//img[@src='images/high_tatras2_min.jpg']")
+    elem3 = driver.find_element_by_xpath("//img[@src='images/high_tatras3_min.jpg']")
+    elem4 = driver.find_element_by_xpath("//img[@src='images/high_tatras4_min.jpg']")
+
+    drop_area = driver.find_element_by_xpath("//div[@id='trash']")
+    actions = ActionChains(driver)
+    actions.drag_and_drop(elem1, drop_area)
+    # actions.click_and_hold(elem1).perform
+
+def drag_drop_action3():
+    driver.get("http://testautomationpractice.blogspot.com/")
+    item1 = driver.find_element_by_xpath("//div[@id='draggable']")
+    drop_zone = driver.find_element_by_xpath("//div[@id='droppable']")
+
+    actions = ActionChains(driver)
+    actions.drag_and_drop(item1, drop_zone).perform()
+    # actions.move_to_element(item1, drop_zone).perform() # hover over element (mouse movement)
+    time.sleep(5)
+    print("drag and drop finished.")
+
+def move_mouse_action():
+    driver.get("http://automationpractice.com/index.php")
+    prod_xpath = '//ul[@id="homefeatured"]//a[@title="Faded Short Sleeve T-shirts" and @class="product-name"]'
+    driver.execute_script("window.scrollTo(0, 700);")
+    time.sleep(5)
+
+    prod1 = driver.find_element_by_xpath(prod_xpath)
+    actions = ActionChains(driver)
+    actions.move_to_element(prod1)
+
+    time.sleep(10)
 
 
 
