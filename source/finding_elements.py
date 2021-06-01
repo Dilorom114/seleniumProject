@@ -374,7 +374,18 @@ def move_mouse_action():
 
     time.sleep(10)
 
-
+def check_radio_btn():
+    driver.get("https://www.seleniumeasy.com/test/basic-radiobutton-demo.html")
+    male = driver.find_element_by_xpath("//input[@value='Male' and @name='optradio' and @type='radio']")
+    male.click()
+    button = driver.find_element_by_xpath("//button[contains(text(), 'Get Checked value')]")
+    button.click()
+    print(male.is_selected())
+    female = driver.find_element_by_xpath("//input[@value='Female' and @name='optradio' and @type='radio']")
+    time.sleep(2)
+    female.click()
+    button.click()
+    print(female.is_selected())
 
 
 
