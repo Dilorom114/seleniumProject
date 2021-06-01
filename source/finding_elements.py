@@ -37,7 +37,7 @@ from utilities import *
 
 # this will disable adds, unwanted popups
 options = Options()
-options.add_argument('--disable-notifications')
+# options.add_argument('--disable-notifications')
 # options.add_argument('--headless')  # running the chrome on the background
 
 driver = webdriver.Chrome(chrome_options=options)
@@ -72,6 +72,7 @@ def back_forward():
     driver.get_screenshot_as_file(img2)
     time.sleep(5)
 
+
 def get_total_input_fields():
     '''
     find the "Enter a" input box
@@ -91,6 +92,7 @@ def get_total_input_fields():
     sum_button = driver.find_element_by_xpath("//button[text()='Get Total']")
     sum_button.click()
     driver.get_screenshot_as_file(img1)
+
 
 def close_browser():
     driver.close()  # closes the current tab
@@ -117,6 +119,7 @@ def checkbox_elements():
     print(f"Final message: {msg_text}")
 
     assert "Success" in msg_text
+
 
 def ecommerse_search():
 
@@ -318,14 +321,14 @@ def explicit_wait_methods():
     print ("## Case 4: element_to_be_selected")
     check_btn_id = "checkbox"
 
-    wdwait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, check_btn_id)))
+    wdwait.until(EC.element_to_be_clickable((By.ID, check_btn_id))).click()
     driver.find_element_by_id(check_btn_id).click()
 
     print("waiting until box is selected... ")
     wdwait.until(EC.element_to_be_selected((By.CSS_SELECTOR, '#ch')))  # this returns True/False
-    driver.find_element_by_css_selector("#ch").click()
+    driver.find_element_by_css_selector('#ch').click()
     print("waiting until box is unchecked... ")
-    wdwait.until_not(EC.element_to_be_selected((By.CSS_SELECTOR, "#ch")))
+    wdwait.until_not(EC.element_to_be_selected((By.CSS_SELECTOR, '#ch')))
     print("Case 4 completed!")
 
     # driver.find_element((By.ID, 'username'))
